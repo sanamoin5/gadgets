@@ -1,14 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import quizData from "data/quizData"; // your dummy quiz data
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 import MKButton from "components/MKButton";
+import axios from "axios"; // For API calls
+import API_BASE_URL from "../config";
 
 function QuizPage() {
   const navigate = useNavigate();
+  const [quizData, setQuizData] = useState([]);
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  // Fetch quiz data on component mount
+  useEffect(() => {
+    const fetchQuizData = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/questions`); // Replace with your backend URL
+        setQuizData(response.data); // Assuming response.data is an array of questions
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load quiz data.");
+        setLoading(false);
+      }
+    };
+
+    fetchQuizData();
+  }, []);
 
   const handleNext = (selectedOption) => {
     setAnswers({ ...answers, [currentStep]: selectedOption });
@@ -16,10 +36,14 @@ function QuizPage() {
     if (currentStep < quizData.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      // after the last question, go to results
+      // After the last question, navigate to results
       navigate("/results", { state: answers });
     }
   };
+
+  // Handle loading and error states
+  if (loading) return <MKTypography variant="h5">Loading...</MKTypography>;
+  if (error) return <MKTypography variant="h5">{error}</MKTypography>;
 
   const questionData = quizData[currentStep];
 
