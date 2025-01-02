@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "9000:8000"
+    environment:
+      DATABASE_URL: "postgresql+psycopg2://user:password@db:5432/dbname"
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+
+  db:
+    image: postgres:15
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dbname
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  db_ops:
+    build:
+      context: ./db_ops
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql+psycopg2://user:password@db:5432/dbname"
+    command: "python manage_db.py"
+
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: ["npm", "run", "build"]
+
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "9009:9009" # Nginx listens on port 9009
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./frontend/build:/usr/share/nginx/html
+
+volumes:
+  db_data:
