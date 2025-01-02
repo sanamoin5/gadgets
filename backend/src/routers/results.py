@@ -16,7 +16,7 @@ products_data = [
 ]
 
 
-@router.post("/api/results", response_model=List[Product])
+@router.post("/results", response_model=List[Product])
 async def fetch_results(responses: List[Response]):
     """
     Endpoint to process quiz responses and return product recommendations.

@@ -21,8 +21,7 @@ app.add_middleware(
 )
 
 app.add_middleware(
-    MetricsMiddleware,
-    exempt_paths=["/metrics"]
+    MetricsMiddleware
 )
 
 app.include_router(questions.router, prefix="/api/v1")

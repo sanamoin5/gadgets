@@ -15,7 +15,7 @@ questions_data = [
 ]
 
 
-@router.get("/api/questions", response_model=List[Question])
+@router.get("/questions", response_model=List[Question])
 async def fetch_questions():
     """
     Endpoint to fetch quiz questions.

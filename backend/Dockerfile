@@ -17,10 +17,4 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     python -m pip install -r requirements.txt \
     pip cache purge
 
-EXPOSE 8080
-
-# Define environment variable
-ENV NAME Gadgets
-
-# Run the start script.
-CMD uvicorn src.main:app --host 0.0.0.0 --port 8080
+CMD uvicorn src.main:app --host 0.0.0.0 --port 8000
