@@ -2,7 +2,7 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from src.middlewares.metrics import MetricsMiddleware
-from src.routers import questions, results
+from src.routers import questions, results, all_gadgets
 import logging
 from src.configs.logging import setup_logging
 from starlette.responses import Response
@@ -26,6 +26,7 @@ app.add_middleware(
 
 app.include_router(questions.router, prefix="/api/v1")
 app.include_router(results.router, prefix="/api/v1")
+app.include_router(all_gadgets.router, prefix="/api/v1")
 
 
 @app.get("/metrics")
