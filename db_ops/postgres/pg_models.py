@@ -1,11 +1,12 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime, Text, Integer, Table
+from sqlalchemy import Column, ForeignKey, String, DateTime, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-from datetime import datetime
+import datetime
 
 Base = declarative_base()
+
 
 class User(Base):
     """Represents a user in the system."""
@@ -13,7 +14,7 @@ class User(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String(255), unique=True, nullable=False)
-    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
 
     quiz_responses = relationship("QuizResponse", back_populates="user")
     recommendations = relationship("Recommendation", back_populates="user")
@@ -28,7 +29,7 @@ class Gadget(Base):
     description = Column(Text)
     price = Column(String(50))
     image_url = Column(Text)
-    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
 
     recommendations = relationship("Recommendation", back_populates="gadget")
 
@@ -39,7 +40,7 @@ class QuizQuestion(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     question = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.now, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
 
     options = relationship("QuizOption", back_populates="question")
 
@@ -63,7 +64,7 @@ class QuizResponse(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
     question_id = Column(UUID(as_uuid=True), ForeignKey('quiz_questions.id', ondelete="CASCADE"), nullable=False)
     selected_option = Column(Text, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
 
     user = relationship("User", back_populates="quiz_responses")
     question = relationship("QuizQuestion")
@@ -76,7 +77,7 @@ class Recommendation(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey('users.id', ondelete="CASCADE"), nullable=False)
     gadget_id = Column(UUID(as_uuid=True), ForeignKey('gadgets.id', ondelete="CASCADE"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
 
     user = relationship("User", back_populates="recommendations")
     gadget = relationship("Gadget", back_populates="recommendations")
