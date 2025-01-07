@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, String, DateTime, Text
+from sqlalchemy import Column, ForeignKey, String, DateTime, Text, Float, Integer, Boolean, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import UUID
@@ -6,6 +6,15 @@ import uuid
 import datetime
 
 Base = declarative_base()
+
+
+# Association table for many-to-many relationship between gadgets and categories
+gadget_category_association = Table(
+    'gadget_categories',
+    Base.metadata,
+    Column('gadget_id', UUID(as_uuid=True), ForeignKey('gadgets.id', ondelete="CASCADE"), primary_key=True),
+    Column('category_id', UUID(as_uuid=True), ForeignKey('categories.id', ondelete="CASCADE"), primary_key=True)
+)
 
 
 class User(Base):
@@ -27,11 +36,31 @@ class Gadget(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     description = Column(Text)
-    price = Column(String(50))
+    price = Column(Float, nullable=True)  # Allow null if price is unavailable
+    currency = Column(String(10), nullable=True)
+    rating = Column(Float, nullable=True)
+    reviews_count = Column(Integer, nullable=True)
     image_url = Column(Text)
+    amazon_choice = Column(Boolean, default=False)
+    best_seller = Column(Boolean, default=False)
+    sales_volume = Column(String(255), nullable=True)  # Sales data as text
+    shipping_info = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
 
     recommendations = relationship("Recommendation", back_populates="gadget")
+    categories = relationship("Category", secondary=gadget_category_association, back_populates="gadgets")
+
+
+class Category(Base):
+    """Represents a category for gadgets (e.g., 'xbox console', 'headphones')."""
+    __tablename__ = 'categories'
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    name = Column(String(255), unique=True, nullable=False)  # Categories should be unique
+    description = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.datetime.now(datetime.UTC), nullable=False)
+
+    gadgets = relationship("Gadget", secondary=gadget_category_association, back_populates="categories")
 
 
 class QuizQuestion(Base):
