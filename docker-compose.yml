@@ -7,7 +7,7 @@ services:
     ports:
       - "9000:8000"
     environment:
-      DATABASE_URL: "postgresql+psycopg2://user:password@db:5432/dbname"
+      DATABASE_URL: "postgresql+psycopg2://username:password@db:5432/gadgets"
     depends_on:
       - db
     volumes:
@@ -18,9 +18,9 @@ services:
     container_name: db
     restart: always
     environment:
-      POSTGRES_USER: user
+      POSTGRES_USER: username
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: dbname
+      POSTGRES_DB: gadgets
     volumes:
       - db_data:/var/lib/postgresql/data
 
@@ -30,7 +30,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: "postgresql+psycopg2://user:password@db:5432/dbname"
+      DATABASE_URL: "postgresql+psycopg2://username:password@db:5432/gadgets"
     command: "python manage_db.py"
 
   frontend:
