@@ -1,3 +1,4 @@
+asyncpg~=0.30.0
 annotated-types~=0.7.0
 anyio~=4.7.0
 python-decouple~=3.8
@@ -12,3 +13,5 @@ SQLAlchemy~=2.0.36
 starlette~=0.41.3
 typing_extensions~=4.12.2
 uvicorn~=0.28.0
+pandas~=2.2.1
+greenlet~=3.1.1

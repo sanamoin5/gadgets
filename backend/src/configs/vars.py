@@ -11,5 +11,5 @@ class VarsConfig:
     POSTGRES_HOST = config('POSTGRES_HOST', default='')
     POSTGRES_PORT = config('POSTGRES_PORT', default='')
     POSTGRES_PASSWORD = config('POSTGRES_PASSWORD', default='')
-    POSTGRES_DB_NAME = config('POSTGRES_DB', default='')
+    POSTGRES_DB_NAME = config('POSTGRES_DB_NAME', default='')
 

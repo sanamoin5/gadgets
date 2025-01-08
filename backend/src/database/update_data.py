@@ -7,8 +7,10 @@ async def add_product_data():
 
 
 async def run_updates():
-    await DatabaseManager.load_quiz_data_from_json("quiz_questions.json")
     # Ingest categories first
-    await DatabaseManager.add_categories_from_json("categories.json")
+    await DatabaseManager.add_categories_from_json("../../data/categories.json")
     # Then load quiz data
-    await DatabaseManager.load_quiz_data_from_json("quiz_questions.json")
+    await DatabaseManager.load_quiz_data_from_json("../../data/quiz_data.json")
+
+
+asyncio.run(run_updates())

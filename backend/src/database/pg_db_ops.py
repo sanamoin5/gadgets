@@ -3,8 +3,8 @@ import json
 import pandas as pd
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import insert, select
-from pg_models import Base, Gadget, Category, gadget_category_association, QuizQuestion, QuizOption
-from config import engine
+from .pg_models import Gadget, Category, gadget_category_association, QuizQuestion, QuizOption
+from .config import engine
 import uuid
 import datetime
 

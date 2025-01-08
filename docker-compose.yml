@@ -1,5 +1,7 @@
 version: '3.8'
 
+
+
 services:
   backend:
     build:
@@ -7,11 +9,15 @@ services:
     ports:
       - "9000:8000"
     environment:
-      DATABASE_URL: "postgresql+psycopg2://username:password@db:5432/gadgets"
+      DATABASE_URL: "postgresql+asyncpg://username:password@db:5432/gadgets"
+
     depends_on:
       - db
     volumes:
       - ./backend:/app
+    networks:
+      - gadgets_network
+
 
   db:
     image: postgres:15
@@ -23,15 +29,10 @@ services:
       POSTGRES_DB: gadgets
     volumes:
       - db_data:/var/lib/postgresql/data
+    networks:
+      - gadgets_network
 
-  db_ops:
-    build:
-      context: ./db_ops
-    depends_on:
-      - db
-    environment:
-      DATABASE_URL: "postgresql+psycopg2://username:password@db:5432/gadgets"
-    command: "python manage_db.py"
+
 
   frontend:
     build:
@@ -39,7 +40,7 @@ services:
     volumes:
       - ./frontend:/app
     working_dir: /app
-    command: ["npm", "run", "build"]
+    command: [ "npm", "run", "build" ]
 
   nginx:
     build:
@@ -55,3 +56,8 @@ services:
 
 volumes:
   db_data:
+
+
+networks:
+  gadgets_network:
+    driver: bridge

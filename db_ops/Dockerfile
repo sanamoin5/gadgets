@@ -21,5 +21,3 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . /app
 
-# Set the command to run database migrations or other tasks
-CMD ["python", "manage_db.py"]
