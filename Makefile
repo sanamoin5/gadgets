@@ -7,5 +7,8 @@ start:
 restart-frontend:
 	docker-compose restart frontend
 
+restart-backend:
+	docker-compose restart backend
+
 logs-backend:
 	docker-compose logs -f backend
