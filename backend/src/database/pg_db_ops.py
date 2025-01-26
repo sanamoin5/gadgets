@@ -222,6 +222,41 @@ class DatabaseManager:
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"An error occurred while fetching gadgets: {e}") from e
 
+    @staticmethod
+    async def fetch_questions():
+        """
+        Fetches quiz questions and their options from the database.
+        Returns a list of questions with their options.
+        """
+        try:
+            async with engine.begin() as conn:
+                questions_query = await conn.execute(select(QuizQuestion))
+                questions = questions_query.scalars().all()
+
+                if not questions:
+                    print("No quiz questions found in the database.")
+                    return []
+
+                questions_data = []
+                for question in questions:
+                    options_query = await conn.execute(
+                        select(QuizOption.option_text).where(QuizOption.question_id == question)
+                    )
+                    options = [option[0] for option in options_query.fetchall()]
+
+                    questions_data.append({
+                        "id": question,
+                        "question": question.question,
+                        "options": options,
+                    })
+
+                print(f"Fetched {len(questions_data)} quiz questions from the database.")
+                return questions_data
+
+        except SQLAlchemyError as e:
+            raise SQLAlchemyError(f"An error occurred while fetching quiz questions: {e}") from e
+
+
 async def run_updates():
     # Ingest categories first
     await DatabaseManager.add_categories_from_json("../../data/categories.json")

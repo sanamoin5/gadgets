@@ -1,20 +1,21 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional, List
+from uuid import UUID
 
 
 class Question(BaseModel):
-    id: int
+    id: UUID
     question: str
     options: List[str]
 
 
 class Response(BaseModel):
-    question_id: int
+    question_id: UUID
     answer: str
 
 
 class Product(BaseModel):
-    id: int
+    id: UUID
     name: str
-    description: str
-    price: str
+    description: Optional[str]
+    price: Optional[str]
