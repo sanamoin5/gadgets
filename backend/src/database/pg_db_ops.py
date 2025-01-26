@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 import pandas as pd
@@ -220,3 +221,12 @@ class DatabaseManager:
                 return gadgets
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"An error occurred while fetching gadgets: {e}") from e
+
+async def run_updates():
+    # Ingest categories first
+    await DatabaseManager.add_categories_from_json("../../data/categories.json")
+    # Then load quiz data
+    await DatabaseManager.load_quiz_data_from_json("../../data/quiz_data.json")
+
+
+# asyncio.run(run_updates())

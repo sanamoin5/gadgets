@@ -78,6 +78,7 @@ class QuizQuestion(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     question = Column(Text, nullable=False)
+    question_type = Column(String(50), default="sub", nullable=False)  # Added question_type field
     is_main_question = Column(Boolean, default=True, nullable=False)
     interests = Column(Text, nullable=True)  # Comma-separated interests data for mapping
     categories = Column(Text, nullable=True)  # Comma-separated categories for mapping
