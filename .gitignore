@@ -1,3 +1,11 @@
 /frontend/node_modules/
 /db_ops/data
-/backend/data
+/recommendation_engine/data
+*.pth
+*.pt
+*.csv
+*.mp4
+*.mp3
+.idea
+.env
+backend/.env
