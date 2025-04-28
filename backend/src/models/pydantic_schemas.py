@@ -19,3 +19,22 @@ class Product(BaseModel):
     name: str
     description: Optional[str]
     price: Optional[str]
+
+
+class SBERTInferenceRequest(BaseModel):
+    texts: List[str]
+
+
+class SBERTInferenceResponse(BaseModel):
+    embeddings: List[List[float]]
+
+
+class MetaReviewInferenceRequest(BaseModel):
+    review: str
+    metadata: str
+    price: float
+
+
+class MetaReviewInferenceResponse(BaseModel):
+    score: float
+    fused_embedding: list

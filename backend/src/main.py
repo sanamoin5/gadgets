@@ -2,14 +2,17 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.database.config import engine
+from src.database.db_config import engine
 from src.database.pg_db_ops import DatabaseManager
 from src.database.pg_models import Base
+from src.inference.model_loader import load_sbert_model
 from src.middlewares.metrics import MetricsMiddleware
 from src.routers import questions, results, all_gadgets
 import logging
 from src.configs.logging import setup_logging
 from starlette.responses import Response
+
+from src.utils.qdrant_loader import load_qdrant_manager
 
 if not os.getenv("TEST_ENVIRONMENT"):
     listener = setup_logging()
@@ -44,6 +47,9 @@ async def startup_event() -> None:
     logger.info("Application starting")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    load_sbert_model()  # JIT SBERT model view1
+    await load_qdrant_manager()  # Qdrant client
 
 
 @app.on_event("shutdown")

@@ -1,13 +1,16 @@
 import asyncio
 import json
+import logging
 
 import pandas as pd
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy import insert, select
 from .pg_models import Gadget, Category, gadget_category_association, QuizQuestion, QuizOption
-from .config import engine
+from .db_config import engine
 import uuid
 import datetime
+
+logger = logging.getLogger(__name__)
 
 
 class DatabaseManager:
@@ -43,7 +46,6 @@ class DatabaseManager:
         except (SQLAlchemyError, IOError) as e:
             raise SQLAlchemyError(f"An error occurred while adding gadgets: {e}") from e
 
-
     @staticmethod
     async def add_category(category_name: str, description: str = None):
         """Adds a single category to the database."""
@@ -64,9 +66,9 @@ class DatabaseManager:
                         created_at=datetime.datetime.utcnow()
                     )
                     await conn.execute(query)
-                    print(f"Added category: {category_name}")
+                    logger.info(f"Added category: {category_name}")
                 else:
-                    print(f"Category '{category_name}' already exists.")
+                    logger.info(f"Category '{category_name}' already exists.")
 
                 await conn.commit()
         except SQLAlchemyError as e:
@@ -82,7 +84,7 @@ class DatabaseManager:
                 categories = data.get("categories", [])
 
             if not categories:
-                print("No categories found in the JSON file.")
+                logger.info("No categories found in the JSON file.")
                 return
 
             async with engine.begin() as conn:
@@ -102,12 +104,12 @@ class DatabaseManager:
                             created_at=datetime.datetime.utcnow()
                         )
                         await conn.execute(query)
-                        print(f"Added category: {category_name}")
+                        logger.info(f"Added category: {category_name}")
                     else:
-                        print(f"Category '{category_name}' already exists.")
+                        logger.info(f"Category '{category_name}' already exists.")
 
             await conn.commit()
-            print(f"Ingested {len(categories)} categories into the database.")
+            logger.info(f"Ingested {len(categories)} categories into the database.")
 
         except (SQLAlchemyError, IOError) as e:
             raise SQLAlchemyError(f"An error occurred while adding categories: {e}") from e
@@ -133,7 +135,7 @@ class DatabaseManager:
                     options = question.get('options', [])
 
                     if not question_text or not options:
-                        print("Skipping invalid question entry.")
+                        logger.info("Skipping invalid question entry.")
                         continue
 
                     # Ensure all categories exist
@@ -151,7 +153,7 @@ class DatabaseManager:
                                 created_at=datetime.datetime.utcnow()
                             )
                             await conn.execute(query)
-                            print(f"Added missing category: {category_name}")
+                            logger.info(f"Added missing category: {category_name}")
 
                     # Create a new QuizQuestion entry
                     quiz_question_id = uuid.uuid4()
@@ -160,7 +162,7 @@ class DatabaseManager:
                         question=question_text,
                         question_type=question_type,
                         categories=', '.join(categories),  # Store as comma-separated string
-                        interests=', '.join(interests),    # Store as comma-separated string
+                        interests=', '.join(interests),  # Store as comma-separated string
                         created_at=datetime.datetime.utcnow()
                     )
                     query = insert(QuizQuestion).values(
@@ -190,7 +192,7 @@ class DatabaseManager:
 
                 # Commit all changes
                 await conn.commit()
-            print(f"Ingested {len(questions)} quiz questions into the database.")
+            logger.info(f"Ingested {len(questions)} quiz questions into the database.")
 
         except (SQLAlchemyError, IOError, KeyError) as e:
             raise SQLAlchemyError(f"An error occurred while loading quiz data: {e}") from e
@@ -206,7 +208,7 @@ class DatabaseManager:
                 )
                 await conn.execute(query)
                 await conn.commit()
-                print(f"Linked gadget {gadget_id} to category {category_id}")
+                logger.info(f"Linked gadget {gadget_id} to category {category_id}")
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"An error occurred while linking gadget to category: {e}") from e
 
@@ -217,7 +219,7 @@ class DatabaseManager:
             async with engine.begin() as conn:
                 result = await conn.execute(select(Gadget))
                 gadgets = result.scalars().all()
-                print(f"Fetched {len(gadgets)} gadgets from the database.")
+                logger.info(f"Fetched {len(gadgets)} gadgets from the database.")
                 return gadgets
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"An error occurred while fetching gadgets: {e}") from e
@@ -234,7 +236,7 @@ class DatabaseManager:
                 questions = questions_query.scalars().all()
 
                 if not questions:
-                    print("No quiz questions found in the database.")
+                    logger.info("No quiz questions found in the database.")
                     return []
 
                 questions_data = []
@@ -250,7 +252,7 @@ class DatabaseManager:
                         "options": options,
                     })
 
-                print(f"Fetched {len(questions_data)} quiz questions from the database.")
+                logger.info(f"Fetched {len(questions_data)} quiz questions from the database.")
                 return questions_data
 
         except SQLAlchemyError as e:
@@ -259,9 +261,8 @@ class DatabaseManager:
 
 async def run_updates():
     # Ingest categories first
-    await DatabaseManager.add_categories_from_json("../../data/categories.json")
+    await DatabaseManager.add_categories_from_json("../../../recommendation_engine/data/raw/categories.json")
     # Then load quiz data
-    await DatabaseManager.load_quiz_data_from_json("../../data/quiz_data.json")
-
+    await DatabaseManager.load_quiz_data_from_json("../../../recommendation_engine/data/processed/quiz_data.json")
 
 # asyncio.run(run_updates())

@@ -1,0 +1,5 @@
+epoch,train_loss,val_recall@1,val_mrr,test_recall@1,test_mrr
+1,1.2424,,,,
+2,1.0020,0.0033,0.0121,,
+3,0.9292,0.0036,0.0132,,
+test,,,,0.0037,0.0133

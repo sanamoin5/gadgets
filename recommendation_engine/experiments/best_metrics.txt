@@ -1,0 +1,51 @@
+Epoch 1 - Training Loss: 1.2424
+Epoch: 2
+Recall@1: 0.0036
+MRR: 0.0132
+mps
+Resumed models from epoch 1
+Generating embeddings:   0%|          | 0/26679 [00:00<?, ?it/s]mps
+mps
+mps
+mps
+Generating embeddings: 100%|██████████| 26679/26679 [32:18<00:00, 13.76it/s]
+Computing metrics: 100%|██████████| 834/834 [30:07<00:00,  2.17s/it]
+Validation after resuming: Recall@1=0.0027, MRR=0.0102
+Training Epoch 2/3:   0%|          | 0/62251 [00:00<?, ?it/s]mps
+mps
+mps
+mps
+Training Epoch 2/3: 100%|██████████| 62251/62251 [7:00:27<00:00,  2.47it/s]
+Checkpoint saved at epoch 2
+Epoch 2 - Training Loss: 1.0020
+Generating embeddings:   0%|          | 0/26679 [00:00<?, ?it/s]mps
+mps
+mps
+mps
+Generating embeddings: 100%|██████████| 26679/26679 [32:22<00:00, 13.73it/s]
+Computing metrics: 100%|██████████| 834/834 [28:35<00:00,  2.06s/it]
+Epoch 2 - Validation Recall@1: 0.0033, MRR: 0.0121
+New best model found at epoch 2 with Recall@1: 0.0033
+Training Epoch 3/3:   0%|          | 0/62251 [00:00<?, ?it/s]mps
+mps
+mps
+mps
+Training Epoch 3/3: 100%|██████████| 62251/62251 [6:51:36<00:00,  2.52it/s]
+Checkpoint saved at epoch 3
+Epoch 3 - Training Loss: 0.9292
+Generating embeddings:   0%|          | 0/26679 [00:00<?, ?it/s]mps
+mps
+mps
+mps
+Generating embeddings: 100%|██████████| 26679/26679 [29:10<00:00, 15.24it/s]
+Computing metrics: 100%|██████████| 834/834 [27:58<00:00,  2.01s/it]
+Epoch 3 - Validation Recall@1: 0.0036, MRR: 0.0132
+New best model found at epoch 3 with Recall@1: 0.0036
+Training complete. Best model at epoch 3 with Recall@1: 0.0036
+Generating embeddings:   0%|          | 0/26679 [00:00<?, ?it/s]mps
+mps
+mps
+mps
+Generating embeddings: 100%|██████████| 26679/26679 [29:18<00:00, 15.17it/s]
+Computing metrics: 100%|██████████| 834/834 [28:13<00:00,  2.03s/it]
+Test Evaluation - Recall@1: 0.0037, MRR: 0.0133

@@ -13,3 +13,8 @@ class VarsConfig:
     POSTGRES_PASSWORD = config('POSTGRES_PASSWORD', default='')
     POSTGRES_DB_NAME = config('POSTGRES_DB_NAME', default='')
 
+    QDRANT_VECTOR_SIZE = config("QDRANT_VECTOR_SIZE", default=3072, cast=int)
+    QDRANT_API_KEY = config("QDRANT_API_KEY")
+    QDRANT_HOST = config("QDRANT_HOST")
+    QDRANT_HTTP_PORT = config("QDRANT_HTTP_PORT")
+
